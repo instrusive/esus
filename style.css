@@ -1,0 +1,187 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;600&display=swap');
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: #121212;
+  color: #e0e0e0;
+  font-family: 'Roboto Mono', monospace;
+  min-height: 100vh;
+}
+
+.container {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* ── Panels ── */
+.panel {
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.input-panel {
+  width: 380px;
+  flex-shrink: 0;
+  background: #1a1a1a;
+  border-right: 1px solid #2e2e2e;
+  gap: 1.25rem;
+}
+
+.results-panel {
+  flex: 1;
+  background: #121212;
+  overflow-x: auto;
+}
+
+/* ── Left panel content ── */
+h1 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #ffffff;
+  line-height: 1.4;
+}
+
+.instructions {
+  font-size: 0.8rem;
+  color: #9e9e9e;
+  line-height: 1.75;
+}
+
+textarea {
+  flex: 1;
+  min-height: 260px;
+  background: #0e0e0e;
+  color: #e0e0e0;
+  border: 1px solid #333;
+  border-radius: 6px;
+  padding: 0.85rem;
+  font-family: 'Roboto Mono', monospace;
+  font-size: 0.78rem;
+  resize: vertical;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+textarea:focus {
+  border-color: #4a90d9;
+}
+
+button {
+  background: #2f6eb5;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  font-family: 'Roboto Mono', monospace;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+  width: 100%;
+}
+
+button:hover {
+  background: #3a80cc;
+}
+
+button:active {
+  transform: scale(0.98);
+}
+
+/* ── Results panel content ── */
+.placeholder-text {
+  color: #444;
+  font-size: 0.82rem;
+  margin-top: 1rem;
+}
+
+.summary-text {
+  font-size: 0.85rem;
+  margin-bottom: 1.25rem;
+  color: #e0e0e0;
+}
+
+.warn {
+  color: #f0a040;
+}
+
+/* ── Table ── */
+.table-scroll {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8rem;
+}
+
+thead tr {
+  background: #1f1f1f;
+  color: #bbb;
+}
+
+th, td {
+  padding: 0.55rem 0.85rem;
+  text-align: center;
+  border-bottom: 1px solid #2a2a2a;
+}
+
+th {
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
+
+tbody tr:hover {
+  background: #1c1c1c;
+}
+
+.averages-row {
+  background: #2c2c2c !important;
+  font-weight: 600;
+}
+
+/* ── Score colors ── */
+td.high-score {
+  color: #4caf50 !important;
+  font-weight: 600;
+}
+
+td.mid-score {
+  color: #ff9800 !important;
+  font-weight: 600;
+}
+
+td.low-score {
+  color: #f44336 !important;
+  font-weight: 600;
+}
+
+/* ── Corgi ── */
+#corgi {
+  margin-top: 1.5rem;
+}
+
+#corgi img {
+  width: 160px;
+  border-radius: 8px;
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+  }
+
+  .input-panel {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid #2e2e2e;
+  }
+}

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ESUS Score Calculator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+
+    <!-- LEFT PANEL -->
+    <div class="panel input-panel">
+      <h1>ESUS Score Calculator</h1>
+      <p class="instructions">
+        <strong>Step 1:</strong> Open your Excel spreadsheet and copy the 5 question columns for all participants.<br /><br />
+        <strong>Step 2:</strong> Paste the data below and click <em>Analyze Data</em>.
+      </p>
+      <textarea
+        id="dataInput"
+        placeholder="Paste your data here. Each row = one participant, 5 numbers per row.&#10;&#10;Example:&#10;3  4  2  5  3&#10;4  3  4  4  2&#10;5  5  5  4  5"
+        spellcheck="false"
+      ></textarea>
+      <button onclick="analyzeData()">Analyze Data</button>
+    </div>
+
+    <!-- RIGHT PANEL -->
+    <div class="panel results-panel">
+      <div id="resultsWrapper" style="display:none;">
+        <div id="summary"></div>
+        <div class="table-scroll">
+          <table id="resultsTable">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Q1</th>
+                <th>Q2</th>
+                <th>Q3</th>
+                <th>Q4</th>
+                <th>Q5</th>
+                <th>Raw</th>
+                <th>ESUS</th>
+              </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+            <tfoot id="tableFoot"></tfoot>
+          </table>
+        </div>
+        <div id="corgi">
+          <img
+            src="https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExamk5Z3lpeHF2MDk5em54Z3Rvbmh0M2NwbTE4OXMyZzJyNmZ2N3I1ciZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/rhC8duvjyYNhRxMBbQ/giphy.gif"
+            alt="dancing corgi"
+          />
+        </div>
+      </div>
+      <div id="placeholder" class="placeholder-text">
+        Results will appear here after you analyze data.
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    function analyzeData() {
+      const raw = document.getElementById('dataInput').value.trim();
+      if (!raw) {
+        alert('Please paste your data before analyzing.');
+        return;
+      }
+
+      const lines = raw.split('\n');
+      const tbody = document.getElementById('tableBody');
+      const tfoot = document.getElementById('tableFoot');
+      tbody.innerHTML = '';
+      tfoot.innerHTML = '';
+
+      let participants = 0;
+      let invalidRows = 0;
+      const qTotals = [0, 0, 0, 0, 0];
+      let esusTotalSum = 0;
+      let rawTotalSum = 0;
+
+      lines.forEach((line, i) => {
+        const nums = line.match(/\d+/g);
+        if (!nums || nums.length < 5) {
+          invalidRows++;
+          return;
+        }
+
+        const vals = nums.slice(0, 5).map(v => parseInt(v, 10));
+        const allValid = vals.every(v => !isNaN(v) && v >= 1 && v <= 5);
+        if (!allValid) {
+          invalidRows++;
+          return;
+        }
+
+        participants++;
+        const rawScore = vals.reduce((a, b) => a + b, 0);
+        const esus = ((rawScore - 5) / 20) * 100;
+
+        vals.forEach((v, qi) => { qTotals[qi] += v; });
+        esusTotalSum += esus;
+        rawTotalSum += rawScore;
+
+        const scoreClass = esus >= 80 ? 'high-score' : esus >= 50 ? 'mid-score' : 'low-score';
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${i + 1}</td>
+          ${vals.map(v => `<td>${v}</td>`).join('')}
+          <td>${rawScore}</td>
+          <td class="${scoreClass}">${esus.toFixed(2)}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      if (participants === 0) {
+        alert('No valid rows found. Make sure each row has 5 numbers between 1 and 5.');
+        return;
+      }
+
+      const avgEsus = esusTotalSum / participants;
+      const avgRaw = rawTotalSum / participants;
+
+      const footTr = document.createElement('tr');
+      footTr.className = 'averages-row';
+      footTr.innerHTML = `
+        <td><strong>Averages</strong></td>
+        ${qTotals.map(t => `<td><strong>${(t / participants).toFixed(2)}</strong></td>`).join('')}
+        <td><strong>${avgRaw.toFixed(2)}</strong></td>
+        <td><strong>${avgEsus.toFixed(2)}</strong></td>
+      `;
+      tbody.appendChild(footTr);
+
+      const summary = document.getElementById('summary');
+      summary.innerHTML = `
+        <p class="summary-text">
+          ✅ <strong>Average ESUS Score:</strong> ${avgEsus.toFixed(2)}<br>
+          (${participants} participant${participants !== 1 ? 's' : ''} processed, ${invalidRows} invalid row${invalidRows !== 1 ? 's' : ''} ignored)
+        </p>
+      `;
+
+      document.getElementById('resultsWrapper').style.display = 'block';
+      document.getElementById('placeholder').style.display = 'none';
+    }
+  </script>
+</body>
+</html>
